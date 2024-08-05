@@ -1,5 +1,7 @@
 <?php
 include 'db_connect.php';
+include 'qrcode.php';
+
 $qry = $conn->query("SELECT * FROM parcels where id = ".$_GET['id'])->fetch_array();
 foreach($qry as $k => $v){
 	$$k = $v;
@@ -19,10 +21,13 @@ $branch = array();
 	<div class="col-lg-12">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="callout callout-info">
+				<div class="callout callout-info d-flex justify-content-between">
 					<dl>
 						<dt>Tracking Number:</dt>
 						<dd> <h4><b><?php echo $reference_number ?></b></h4></dd>
+					</dl>
+					<dl>
+						<?php echo "<img src='qrcode.php?s=qrl&d=$reference_number' alt='qr'>" ?>
 					</dl>
 				</div>
 			</div>
@@ -89,41 +94,20 @@ $branch = array();
 							<?php 
 							switch ($status) {
 								case '1':
-									echo "<span class='badge badge-pill badge-info'> Collected</span>";
+									echo "<span class='badge badge-info'> Collected</span>";
 									break;
 								case '2':
-									echo "<span class='badge badge-pill badge-info'> Shipped</span>";
+									echo "<span class='badge badge-secondary'> Shipped</span>";
 									break;
-								// case '3':
-								// 	echo "<span class='badge badge-pill badge-primary'> In-Transit</span>";
-								// 	break;
-								// case '4':
-								// 	echo "<span class='badge badge-pill badge-primary'> Arrived At Destination</span>";
-								// 	break;
-								// case '5':
-								// 	echo "<span class='badge badge-pill badge-primary'> Out for Delivery</span>";
-								// 	break;
-								// case '6':
-								// 	echo "<span class='badge badge-pill badge-primary'> Ready to Pickup</span>";
-								// 	break;
-								// case '7':
-								// 	echo "<span class='badge badge-pill badge-success'>Delivered</span>";
-								// 	break;
-								// case '8':
-								// 	echo "<span class='badge badge-pill badge-success'> Picked-up</span>";
-								// 	break;
-								// case '9':
-								// 	echo "<span class='badge badge-pill badge-danger'> Unsuccessfull Delivery Attempt</span>";
-								// 	break;
 								
 								default:
-									echo "<span class='badge badge-pill badge-info'> Item Accepted</span>";
+									echo "<span class='badge badge-warning'> Item Accepted</span>";
 									
 									break;
 							}
 
 							?>
-							<span class="btn btn-primary mb-3" id='update_status'>Update</span>
+							<span class="btn btn-sm btn-primary mb-3" id='update_status'>Update</span>
 						</dd>
 
 					</dl>
