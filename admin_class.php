@@ -14,7 +14,6 @@ Class Action {
 	    $this->db->close();
 	    ob_end_flush();
 	}
-
 	function login(){
 		extract($_POST);
 			$qry = $this->db->query("SELECT *,concat(firstname,' ',lastname) as name FROM users where email = '".$email."' and password = '".md5($password)."'  ");
@@ -127,7 +126,6 @@ Class Action {
 			return 1;
 		}
 	}
-
 	function update_user(){
 		extract($_POST);
 		$data = "";
@@ -265,41 +263,47 @@ Class Action {
 	}
 	function save_parcel(){
 		extract($_POST);
-		foreach($price as $k => $v){
-			$data = "";
-			foreach($_POST as $key => $val){
-				if(!in_array($key, array('id','weight','height','width','length','price')) && !is_numeric($key)){
-					if(empty($data)){
-						$data .= " $key='$val' ";
-					}else{
-						$data .= ", $key='$val' ";
+		if(isset($price) && is_iterable($price)){
+			foreach($price as $k => $v){
+				$data = "";
+				foreach($_POST as $key => $val){
+					if(!in_array($key, array('id','weight','height','width','length','price','amount','bag','remark')) && !is_numeric($key)){
+						if(empty($data)){
+							$data .= " $key='$val' ";
+						}else{
+							$data .= ", $key='$val' ";
+						}
 					}
 				}
-			}
-			if(!isset($type)){
-				$data .= ", type='2' ";
-			}
-				$data .= ", height='{$height[$k]}' ";
-				$data .= ", width='{$width[$k]}' ";
-				$data .= ", length='{$length[$k]}' ";
-				$data .= ", weight='{$weight[$k]}' ";
-				$price[$k] = str_replace(',', '', $price[$k]);
-				$data .= ", price='{$price[$k]}' ";
-			if(empty($id)){
-				$i = 0;
-				while($i == 0){
-					$ref = sprintf("%'012d",mt_rand(0, 999999999999));
-					$chk = $this->db->query("SELECT * FROM parcels where reference_number = '$ref'")->num_rows;
-					if($chk <= 0){
-						$i = 1;
-					}
+				if(!isset($type)){
+					$data .= ", type='2' ";
 				}
-				$data .= ", reference_number='$ref' ";
-				if($save[] = $this->db->query("INSERT INTO parcels set $data"))
-					$ids[]= $this->db->insert_id;
-			}else{
-				if($save[] = $this->db->query("UPDATE parcels set $data where id = $id"))
-					$ids[] = $id;
+					$data .= ", height='{$height[$k]}' ";
+					$data .= ", width='{$width[$k]}' ";
+					$data .= ", length='{$length[$k]}' ";
+					$data .= ", weight='{$weight[$k]}' ";
+					$price[$k] = str_replace(',', '', $price[$k]);
+					$data .= ", price='{$price[$k]}' ";
+					$amount[$k] = str_replace(',', '', $amount[$k]);
+					$data .= ", amount='{$amount[$k]}' ";
+					$data .= ", bag='{$bag[$k]}' ";
+					$data .= ", remark='{$remark[$k]}' ";
+				if(empty($id)){
+					$i = 0;
+					while($i == 0){
+						$ref = sprintf("%'012d",mt_rand(0, 999999999999));
+						$chk = $this->db->query("SELECT * FROM parcels where reference_number = '$ref'")->num_rows;
+						if($chk <= 0){
+							$i = 1;
+						}
+					}
+					$data .= ", reference_number='$ref' ";
+					if($save[] = $this->db->query("INSERT INTO parcels set $data"))
+						$ids[]= $this->db->insert_id;
+				}else{
+					if($save[] = $this->db->query("UPDATE parcels set $data where id = $id"))
+						$ids[] = $id;
+				}
 			}
 		}
 		if(isset($save) && isset($ids)){
@@ -329,9 +333,11 @@ Class Action {
 		}else{
 			$parcel = $parcel->fetch_array();
 			$data[] = array('status'=>'Item accepted','date_created'=>date("M d, Y h:i A",strtotime($parcel['date_created'])));
-			$history = $this->db->query("SELECT * FROM parcel_tracks where parcel_id = {$parcel['id']}");
+			$history = $this->db->query("SELECT * FROM parcel_tracks LEFT JOIN parcels ON parcel_tracks.parcel_id = parcels.id where parcel_id = {$parcel['id']}");
 			$status_arr = array("Item Accepted","Collected","Shipped");
 			while($row = $history->fetch_assoc()){
+				$row['sender_name'] = ucwords($row['sender_name']);
+				$row['recipient_name'] = ucwords($row['recipient_name']);
 				$row['date_created'] = date("M d, Y h:i A",strtotime($row['date_created']));
 				$row['status'] = $status_arr[$row['status']];
 				$data[] = $row;

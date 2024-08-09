@@ -17,6 +17,68 @@
 	</div>
 	<div class="row">
 		<div class="col-md-8 offset-md-2">
+			<div class="col-md-12 d-flex">
+				<div class="col-md-6">
+					<!-- <div class="callout callout-info">
+						<b class="border-bottom border-primary">Sender Information</b>
+						<dl>
+							<dt>Name:
+								<span id="sender_name"></span>
+							</dt>
+							<dt>Address:
+								<span id="sender_address"></span>
+							</dt>
+							<dt>Contact:
+								<span id="sender_contact"></span>
+							</dt>
+						</dl>
+					</div> -->
+					<div class="callout callout-info">
+						<b class="border-bottom border-primary">Recipient Information</b>
+						<dl>
+							<dt>Name:
+								<span id="recipient_name"></span>
+							</dt>
+							<dt>Address:
+								<span id="recipient_address"></span>
+							</dt>
+							<dt>Contact:
+								<span id="recipient_contact"></span>
+							</dt>
+						</dl>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="callout callout-info">
+						<b class="border-bottom border-primary">Parcel Details</b>
+							<div class="row">
+								<div class="col-sm-6">
+									<dl>
+										<dt>Weight:
+											<span id="weight"></span>
+										</dt>
+										<dt>Height:
+											<span id="height"></span>
+										</dt>
+										<dt>Price:
+											<span id="price"></span>
+										</dt>
+									</dl>	
+								</div>
+								<div class="col-sm-6">
+									<dl>
+										<dt>Width:
+											<span id="width"></span>
+										</dt>
+										<dt>length:
+											<span id="length"></span>
+										</dt>
+									</dl>	
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
 			<div class="timeline" id="parcel_history">
 				
 			</div>
@@ -61,8 +123,23 @@
 								tl.find('.dtime').text(resp[k].date_created)
 								tl.find('.timeline-body').text(resp[k].status)
 								$('#parcel_history').append(tl)
+								$('#parcel_history').append(tl)
 							})
 						}
+						if(Object.keys(resp).length > 1){
+							$('#sender_name').text(resp[1].sender_name);
+							$('#sender_address').text(resp[1].sender_address);
+							$('#sender_contact').text(resp[1].sender_contact);
+							$('#recipient_name').text(resp[1].recipient_name);
+							$('#recipient_address').text(resp[1].recipient_address);
+							$('#recipient_contact').text(resp[1].recipient_contact);
+							$('#weight').text(resp[1].weight);
+							$('#height').text(resp[1].height);
+							$('#length').text(resp[1].length);
+							$('#width').text(resp[1].width);
+							$('#price').text(parseFloat(resp[1].price).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' Ks');
+						}
+						console.log(resp[1])
 					}else if(resp == 2){
 						alert_toast('Unkown Tracking Number.',"error")
 					}

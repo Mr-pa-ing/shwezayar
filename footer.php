@@ -195,11 +195,9 @@ onReady(function () {
 
         var data = google.visualization.arrayToDataTable([
           ['Task', 'Status'],
-          ['Item Accepted by Courier	',     56],
-          ['Collected',      22],
-          ['Shiped',  52],
-          ['In-Transit	', 82],
-          ['Out of Delivery	',    108]
+          ['Item Accepted', 56],
+          ['Collected', 50],
+          ['Shiped',  78]
         ]);
 
         var options = {

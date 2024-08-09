@@ -3,21 +3,21 @@
 <div class="col-lg-12">
 	<div class="card card-outline">
 		<div class="card-body">
-			<div class="d-flex w-100 px-1 py-1 justify-content-center align-items-center">
+			<div class="d-flex w-100 px-1 py-1 justify-content-end align-items-center">
 			<?php 
 			$status_arr = array("Item Accepted","Collected","Shipped"); ?>
-				<label for="date_from" class="mx-3">Status</label>
+				<!-- <label for="date_from" class="mx-3">Status</label>
 				<select name="" id="status" class="custom-select custom-select-sm col-sm-3">
 					<option value="all" <?php echo $status == 'all' ? "selected" :'' ?>>All</option>
 					<?php foreach($status_arr as $k => $v): ?>
 						<option value="<?php echo $k ?>" <?php echo $status != 'all' && $status == $k ? "selected" :'' ?>><?php echo $v; ?></option>
 					<?php endforeach; ?>
-				</select>
+				</select> -->
 				<label for="date_from" class="mx-3">From</label>
-                <input type="date" id="date_from" class="form-control form-control-sm col-sm-3" value="<?php echo isset($_GET['date_from']) ? date("Y-m-d",strtotime($_GET['date_from'])) : '' ?>">
+                <input type="date" id="date_from" class="form-control form-control col-sm-3" value="<?php echo isset($_GET['date_from']) ? date("Y-m-d",strtotime($_GET['date_from'])) : '' ?>">
                 <label for="date_to" class="mx-3">To</label>
-                <input type="date" id="date_to" class="form-control form-control-sm col-sm-3" value="<?php echo isset($_GET['date_to']) ? date("Y-m-d",strtotime($_GET['date_to'])) : '' ?>">
-                <button class="btn btn-primary mx-4 rounded-0" type="button" id='view_report' style="border-radius: 5px !important;">View</button>
+                <input type="date" id="date_to" class="form-control form-control col-sm-3" value="<?php echo isset($_GET['date_to']) ? date("Y-m-d",strtotime($_GET['date_to'])) : '' ?>">
+                <button class="btn btn-primary mx-4 mb-2 rounded-0" type="button" id='view_report' style="border-radius: 5px !important;">View</button>
 			</div>
 		</div>
 	</div>
@@ -36,10 +36,15 @@
 							<tr>
 								<th>#</th>
 								<th>Date</th>
-								<th>Sender</th>
-								<th>Recepient</th>
+								<th>Name</th>
+								<th>Description</th>
+								<th>Qty</th>
+								<th>Kg</th>
+								<th>Total Kg</th>
+								<th>Unit price</th>
 								<th>Amount</th>
-								<th>Status</th>
+								<th>Bag</th>
+								<th>Remark</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -97,9 +102,14 @@
 								tr.append('<td>'+(i++)+'</td>')
 								tr.append('<td>'+(resp[k].date_created)+'</td>')
 								tr.append('<td>'+(resp[k].sender_name)+'</td>')
-								tr.append('<td>'+(resp[k].recipient_name)+'</td>')
+								tr.append('<td>'+(resp[k].weight)+'</td>')
+								tr.append('<td>'+(resp[k].length)+'</td>')
+								tr.append('<td>'+(resp[k].height)+'</td>')
+								tr.append('<td>'+(resp[k].width)+'</td>')
 								tr.append('<td>'+(resp[k].price)+'</td>')
-								tr.append('<td>'+(resp[k].status)+'</td>')
+								tr.append('<td>'+(resp[k].amount)+'</td>')
+								tr.append('<td>'+(resp[k].bag)+'</td>')
+								tr.append('<td>'+(resp[k].remark)+'</td>')
 								$('#report-list tbody').append(tr)
 							})
 							$('#print').show()

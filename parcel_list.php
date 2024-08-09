@@ -3,7 +3,7 @@
 	<div class="card card-outline ">
 		<div class="card-header">
 			<div class="card-tools">
-				<a class="btn btn-primary" href="./index.php?page=new_parcel">Add</a>
+				<a class="btn btn-primary rounded-0" href="./index.php?page=new_parcel" style="border-radius: 5px !important;">Add</a>
 			</div>
 		</div>
 		<div class="card-body">
@@ -13,9 +13,14 @@
 					<tr>
 						<th class="text-center">#</th>
 						<th>Reference Number</th>
-						<th>Sender Name</th>
-						<th>Recipient Name</th>
-						<th>Status</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Qty</th>
+						<th>Kg</th>
+						<th>Total Kg</th>
+						<th>Unit Price</th>
+						<th>Amount</th>
+						<th>Bag Qty</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -40,8 +45,14 @@
 						<td class="text-center"><?php echo $i++ ?></td>
 						<td><?php echo ($row['reference_number']) ?></td>
 						<td><?php echo ucwords($row['sender_name']) ?></td>
-						<td><?php echo ucwords($row['recipient_name']) ?></td>
-						<td class="text-center">
+						<td><?php echo ucwords($row['weight']) ?></td>
+						<td><?php echo ucwords($row['height']) ?></td>
+						<td><?php echo ucwords($row['length']) ?></td>
+						<td><?php echo ucwords($row['width']) ?></td>
+						<td><?php echo number_format($row['price'],0) ?></td>
+						<td><?php echo number_format($row['amount'],0) ?></td>
+						<td><?php echo ucwords($row['bag']) ?></td>
+						<!-- <td class="text-center">
 							<?php 
 							switch ($row['status']) {
 								case '1':
@@ -50,28 +61,6 @@
 								case '2':
 									echo "<span class='badge badge-pill badge-secondary'> Shipped</span>";
 									break;
-								// case '3':
-								// 	echo "<span class='badge badge-pill badge-primary'> In-Transit</span>";
-								// 	break;
-								// case '4':
-								// 	echo "<span class='badge badge-pill badge-primary'> Arrived At Destination</span>";
-								// 	break;
-								// case '5':
-								// 	echo "<span class='badge badge-pill badge-primary'> Out for Delivery</span>";
-								// 	break;
-								// case '6':
-								// 	echo "<span class='badge badge-pill badge-primary'> Ready to Pickup</span>";
-								// 	break;
-								// case '7':
-								// 	echo "<span class='badge badge-pill badge-success'>Delivered</span>";
-								// 	break;
-								// case '8':
-								// 	echo "<span class='badge badge-pill badge-success'> Picked-up</span>";
-								// 	break;
-								// case '9':
-								// 	echo "<span class='badge badge-pill badge-danger'> Unsuccessfull Delivery Attempt</span>";
-								// 	break;
-								
 								default:
 									echo "<span class='badge badge-pill badge-warning'> Item Accepted</span>";
 									
@@ -79,7 +68,7 @@
 							}
 
 							?>
-						</td>
+						</td> -->
 						<td class="text-center">
 		                    <div class="btn-group">
 		                    	<a  class="view view_parcel" data-id="<?php echo $row['id'] ?>">

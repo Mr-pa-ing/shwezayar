@@ -66,7 +66,7 @@ if($_SESSION['login_type'] != 1)
               <tbody>
           <tr>
             <th>1</th>
-            <th>Item Accepted by Courier  </th>
+            <th>Item Accepted </th>
             <th>56</th>
           </tr>
 
@@ -80,17 +80,6 @@ if($_SESSION['login_type'] != 1)
             <th>Shiped</th>
             <th>78</th>
           </tr>
-          <tr>
-            <th>4</th>
-            <th>In-Transit</th>
-            <th>98</th>
-          </tr>
-          <tr>
-            <th>5</th>
-            <th>Out of Delivery</th>
-            <th>128</th>
-          </tr>
-
               </tbody> 
           </table>
           
