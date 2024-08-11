@@ -1,0 +1,18 @@
+{
+    "name": "macbookpro/shwezayar",
+    "type": "cargo",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Macbookpro\\Shwezayar\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "paingphyozaw"
+        }
+    ],
+    "require": {
+        "picqer/php-barcode-generator": "^2.4"
+    }
+}

@@ -355,7 +355,8 @@ Class Action {
 			$row['recipient_name'] = ucwords($row['recipient_name']);
 			$row['date_created'] = date("M d, Y",strtotime($row['date_created']));
 			$row['status'] = $status_arr[$row['status']];
-			$row['price'] = number_format($row['price'],2);
+			$row['price'] = number_format($row['price'],0);
+			$row['amount'] = number_format($row['amount'],0);
 			$data[] = $row;
 		}
 		return json_encode($data);

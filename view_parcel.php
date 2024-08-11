@@ -1,6 +1,14 @@
 <?php
+require 'vendor/autoload.php';
+
 include 'db_connect.php';
 include 'qrcode.php';
+
+require 'vendor/autoload.php';
+
+use Picqer\Barcode\BarcodeGeneratorHTML;
+
+$generator = new BarcodeGeneratorHTML();
 
 $qry = $conn->query("SELECT * FROM parcels where id = ".$_GET['id'])->fetch_array();
 foreach($qry as $k => $v){
@@ -15,10 +23,6 @@ $branch = array();
     	$branch[$row['id']] = $row['address'];
 	endwhile;
 }
-
-$generator = new barcode_generator();
-header("Content-Type: image/$format");
-$generator->output_image($format, $symbology, $data, $options);
 ?>
 <?php error_reporting(0);?>
 <div class="container-fluid">
@@ -30,6 +34,7 @@ $generator->output_image($format, $symbology, $data, $options);
                         <dt>Tracking Number:</dt>
                         <dd>
                             <h4><b><?php echo $reference_number ?></b></h4>
+                            <?php echo $generator->getBarcode('123456789', $generator::TYPE_CODE_128); ?>
                         </dd>
                     </dl>
                     <dl>
@@ -122,8 +127,13 @@ $generator->output_image($format, $symbology, $data, $options);
             </div>
         </div>
     </div>
+	<div id="barcode-container" style="display:none;">
+    <!-- Barcodes will be dynamically inserted here by JavaScript -->
+</div>
+
 </div>
 <div class="modal-footer display p-0 m-0">
+	<button type="button" class="btn btn-primary" id="print_btn">Print</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 </div>
 <style>
@@ -152,11 +162,53 @@ $generator->output_image($format, $symbology, $data, $options);
         text-align: center;
     }
     </style>
-    <h3 class="text-center"><b>Student Result</b></h3>
 </noscript>
 <script>
 $('#update_status').click(function() {
     uni_modal("Update Status of: <?php echo $reference_number ?>",
         "manage_parcel_status.php?id=<?php echo $id ?>&cs=<?php echo $status ?>", "")
 })
+$('#print_btn').click(function() {
+    printLabels();
+});
+
+function printLabels() {
+    start_load();
+
+    var ns = $('noscript').clone();
+    var barcodeContainer = $('<div style="display: flex; flex-wrap: wrap;"></div>');
+    var bagCount = <?php echo $bag; ?>;
+    var companyName = "Shwe Zayar"; // Replace with your actual company name
+    var referenceNumber = "<?php echo $reference_number; ?>";
+    var weightKg = "<?php echo $height; ?>";
+
+    for (var i = 0; i < bagCount; i++) {
+        var barcodeHTML = `
+            <div style="text-align: center; margin-bottom: 10px; margin-right: 10px; padding: 10px; border: 1px solid #000; width: 200px;">
+                <div style="font-weight: bold; margin-bottom: 5px;">${companyName}</div>
+                <?php echo $generator->getBarcode($reference_number, $generator::TYPE_CODE_128); ?>
+                <div style="margin-top: 5px;display: flex; align-items: center; justify-content: space-between;">
+                    <div><strong>${referenceNumber}</strong></div>
+                    <div><strong>${weightKg} Kg</strong></div>
+                </div>
+            </div>
+        `;
+        barcodeContainer.append(barcodeHTML);
+    }
+
+    ns.append(barcodeContainer);
+
+    var nw = window.open('', '', 'height=700,width=900');
+    nw.document.write(ns.html());
+    nw.document.close();
+
+    nw.onload = function() {
+        nw.print();
+        setTimeout(function() {
+            nw.close();
+            end_load();
+        }, 750);
+    };
+}
+
 </script>

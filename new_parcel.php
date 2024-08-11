@@ -6,6 +6,7 @@ textarea {
 </style>
 
 <div class="card card-outline">
+
     <div class="card-body">
         <form action="" id="manage-parcel">
             <input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
@@ -117,11 +118,11 @@ textarea {
                 <?php if(!isset($id)): ?>
                 <tfoot>
                     <th class="text-right">Total</th>
+                    <th class="text-right">0.00</th>
+                    <th></th>
+                    <th class="text-right">0.00</th>
+                    <th></th>
                     <th class="text-right" id="tAmount">0.00</th>
-                    <th></th>
-                    <th class="text-right">0.00</th>
-                    <th></th>
-                    <th class="text-right">0.00</th>
                     <th class="text-right">0.00</th>
                 </tfoot>
                 <?php endif; ?>
@@ -166,13 +167,13 @@ $('#dtype').change(function() {
         $('#tbi-field').show()
     }
 })
-$('[name="price[]"]').keyup(function() {
+$('[name="amount[]"]').keyup(function() {
     calc()
 })
 $('#new_parcel').click(function() {
     var tr = $('#ptr_clone tr').clone()
     $('#parcel-items tbody').append(tr)
-    $('[name="price[]"]').keyup(function() {
+    $('[name="amount[]"]').keyup(function() {
         calc()
     })
     $('.number').on('input keyup keypress', function() {
@@ -227,7 +228,7 @@ function displayImgCover(input, _this) {
 function calc() {
 
     var total = 0;
-    $('#parcel-items [name="price[]"]').each(function() {
+    $('#parcel-items [name="amount[]"]').each(function() {
         var p = $(this).val();
         p = p.replace(/,/g, '')
         p = p > 0 ? p : 0;
