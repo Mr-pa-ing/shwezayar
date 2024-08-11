@@ -66,23 +66,77 @@
 </div>
 <noscript>
     <style>
-    table.table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
 
-    table.table tr,
-    table.table th,
-    table.table td {
-        border: 1px solid;
-    }
+        .text-center {
+            text-align: center;
+        }
 
-    .text-cnter {
-        text-align: center;
-    }
+        .text-right {
+            text-align: right;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .details p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        table.table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.table th, 
+        table.table td {
+            border: 1px solid #000;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        table.table th {
+            background-color: #f0f0f0;
+            text-align: left;
+        }
+
+        table.table td {
+            text-align: left;
+        }
+
+        tfoot th {
+            border-top: 2px solid #000;
+            font-weight: bold;
+        }
+
+        /* Adjustments for smaller screens or pages */
+        @media print {
+            body {
+                font-size: 12px;
+                margin: 10px;
+            }
+            table.table th, 
+            table.table td {
+                font-size: 12px;
+            }
+            h3 {
+                font-size: 20px;
+            }
+            .details p {
+                font-size: 12px;
+            }
+        }
     </style>
     <h3 class="text-center"><b>Report</b></h3>
 </noscript>
+
 <div class="details d-none">
     <p><b>Date Range:</b> <span class="drange"></span></p>
     <!-- <p><b>Status:</b> <span class="status-field">All</span></p> -->
@@ -162,6 +216,7 @@ function load_report() {
                     '</b></td>')
                 tr.append('<td><b>' + totalBag.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
                     '</b></td>')
+				tr.append('<td></td>')
 
                 $('#report-list tbody').append(tr)
 
@@ -224,4 +279,69 @@ $('#print').click(function() {
     }, 750)
 
 })
+
+$('#Commodity').click(function() {
+    printCommodity();
+});
+
+function printCommodity() {
+    start_load();
+
+    // Clone the necessary elements for printing
+    var ns = $('noscript').clone();
+    var details = $('.details').clone();
+    var content = $('#report-list').clone();
+    var date_from = $('#date_from').val();
+    var date_to = $('#date_to').val();
+    var status = $('#status').val();
+
+    // Set the date range in the details section
+    details.find('.drange').text(date_from + " to " + date_to);
+
+    // Remove any existing totals row
+    content.find('tr').last().remove();
+
+    // Remove the Unit Price and Amount columns from the content
+    content.find('th:nth-child(8), th:nth-child(9), td:nth-child(8), td:nth-child(9)').remove();
+
+    // Recalculate the totals
+    var totalQty = 0;
+    var totalKg = 0;
+    var totalBag = 0;
+
+    content.find('tbody tr').each(function() {
+        totalQty += parseFloat($(this).find('td:nth-child(5)').text()) || 0;
+        totalKg += parseFloat($(this).find('td:nth-child(7)').text()) || 0;
+        totalBag += parseFloat($(this).find('td:nth-child(8)').text()) || 0;
+    });
+
+    // Append the totals row
+    var tr = $('<tr></tr>');
+    tr.append('<td colspan="4" class="text-right"><b>Total:</b></td>');
+    tr.append('<td><b>' + totalQty.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</b></td>');
+    tr.append('<td></td>'); // For the Kg column
+    tr.append('<td><b>' + totalKg.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</b></td>');
+    tr.append('<td><b>' + totalBag.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</b></td>');
+    tr.append('<td></td>'); // For the empty columns after Bag
+
+    content.find('tbody').append(tr);
+
+    // Append the modified content for printing
+    ns.append(details);
+    ns.append(content);
+
+    // Open a new window to print the commodity report
+    var nw = window.open('', '', 'height=700,width=900');
+    nw.document.write(ns.html());
+    nw.document.close();
+    nw.print();
+
+    // Close the window after printing
+    setTimeout(function() {
+        nw.close();
+        end_load();
+    }, 750);
+}
+
+
 </script>

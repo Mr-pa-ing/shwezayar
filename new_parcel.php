@@ -13,7 +13,7 @@ textarea {
             <div id="msg" class=""></div>
             <div class="row">
                 <div class="col-md-3">
-                  <h3 class="pl-0"><?php echo $title ?></h3>
+                    <h3 class="pl-0"><?php echo $title ?></h3>
                     <div class="form-group">
                         <label for="" class="control-label">Name</label>
                         <input type="text" name="sender_name" id="" class="form-control"
@@ -92,20 +92,20 @@ textarea {
                                 value="<?php echo isset($width) ? $width :'' ?>">
                         </td>
                         <td>
-                            <input type="text" class="form-control text-right number" name='price[]'
+                            <input type="text" class="form-control number" name='price[]'
                                 value="<?php echo isset($price) ? $price :'' ?>">
                         </td>
                         <td>
-                            <input type="text" class="form-control text-right number" name='amount[]'
-                                value="<?php echo isset($amount) ? $amount :'' ?>" >
+                            <input type="text" class="form-control number" name='amount[]'
+                                value="<?php echo isset($amount) ? $amount :'' ?>">
                         </td>
                         <td>
                             <input type="text" name='bag[]' class="form-control"
-                                value="<?php echo isset($bag) ? $bag :'' ?>" >
+                                value="<?php echo isset($bag) ? $bag :'' ?>">
                         </td>
                         <td>
                             <input type="text" name='remark[]' class="form-control"
-                                value="<?php echo isset($remark) ? $remark :'' ?>" >
+                                value="<?php echo isset($remark) ? $remark :'' ?>">
                         </td>
                         <?php if(!isset($id)): ?>
                         <td>
@@ -167,33 +167,34 @@ $('#dtype').change(function() {
         $('#tbi-field').show()
     }
 })
-$('[name="amount[]"]').keyup(function() {
-    calc()
-})
+$('[name="height[]"], [name="length[]"]').keyup(function() {
+    calc();
+});
+
 $('#new_parcel').click(function() {
-    var tr = $('#ptr_clone tr').clone()
-    $('#parcel-items tbody').append(tr)
-    $('[name="amount[]"]').keyup(function() {
-        calc()
-    })
+    var tr = $('#ptr_clone tr').clone();
+    $('#parcel-items tbody').append(tr);
+    $('[name="height[]"], [name="length[]"]').keyup(function() {
+        calc();
+    });
     $('.number').on('input keyup keypress', function() {
-        var val = $(this).val()
+        var val = $(this).val();
         val = val.replace(/[^0-9]/, '');
         val = val.replace(/,/g, '');
         val = val > 0 ? parseFloat(val).toLocaleString("en-US") : 0;
-        $(this).val(val)
-    })
+        $(this).val(val);
+    });
+});
 
-})
 $('#manage-parcel').submit(function(e) {
-    e.preventDefault()
-    start_load()
+    e.preventDefault();
+    start_load();
     if ($('#parcel-items tbody tr').length <= 0) {
-        alert_toast("Please add atleast 1 parcel information.", "error")
-        end_load()
+        alert_toast("Please add at least 1 parcel information.", "error");
+        end_load();
         return false;
     }
-    
+
     $.ajax({
         url: 'ajax.php?action=save_parcel',
         data: new FormData($(this)[0]),
@@ -207,39 +208,48 @@ $('#manage-parcel').submit(function(e) {
                 alert_toast('Data successfully saved', "success");
                 setTimeout(function() {
                     location.href = 'index.php?page=parcel_list';
-                }, 2000)
-
+                }, 2000);
             }
         }
-    })
-})
-
-function displayImgCover(input, _this) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $('#cover').attr('src', e.target.result);
-        }
-
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+    });
+});
 
 function calc() {
+    var totalAmount = 0;
+    var totalQty = 0;
+    var totalKg = 0;
+    var totalBag = 0;
+    var unitPricePerKg = 1000; // Set your price per Kg here
 
-    var total = 0;
-    $('#parcel-items [name="amount[]"]').each(function() {
-        var p = $(this).val();
-        p = p.replace(/,/g, '')
-        p = p > 0 ? p : 0;
-        total = parseFloat(p) + parseFloat(total)
-    })
-    if ($('#tAmount').length > 0)
-        $('#tAmount').text(parseFloat(total).toLocaleString('en-US', {
-            style: 'decimal',
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2
-        }))
+    $('#parcel-items tbody tr').each(function() {
+        var qty = parseFloat($(this).find('[name="height[]"]').val().replace(/,/g, '')) || 0;
+        var kg = parseFloat($(this).find('[name="length[]"]').val().replace(/,/g, '')) || 0;
+        var itemTotalKg = qty * kg;
+        var amount = itemTotalKg * unitPricePerKg;
+        var bagQty = qty;
+
+        // Update calculated fields
+        $(this).find('[name="width[]"]').val(itemTotalKg.toLocaleString("en-US")); // Total Kg
+        $(this).find('[name="price[]"]').val(unitPricePerKg.toLocaleString("en-US")); // Unit Price
+        $(this).find('[name="amount[]"]').val(amount.toLocaleString("en-US")); // Amount
+        $(this).find('[name="bag[]"]').val(bagQty.toLocaleString("en-US")); // Bag Qty
+
+        // Accumulate totals
+        totalQty += qty;
+        totalKg += itemTotalKg;
+        totalBag += bagQty;
+        totalAmount += amount;
+    });
+
+    // Display totals
+    $('#tAmount').text(totalAmount.toLocaleString('en-US', {
+        style: 'decimal',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
+    }));
+    $('#parcel-items tfoot th:nth-child(2)').text(totalQty.toLocaleString('en-US')); // Total Qty
+    $('#parcel-items tfoot th:nth-child(4)').text(totalKg.toLocaleString('en-US')); // Total Kg
+    $('#parcel-items tfoot th:nth-child(7)').text(totalBag.toLocaleString('en-US')); // Total Bag Qty
 }
 </script>
 </div>

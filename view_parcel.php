@@ -35,6 +35,7 @@ $branch = array();
                         <dd>
                             <h4><b><?php echo $reference_number ?></b></h4>
                             <?php echo $generator->getBarcode('123456789', $generator::TYPE_CODE_128); ?>
+                            <h6 class="mt-2"><?php echo $date_created ?></h6>
                         </dd>
                     </dl>
                     <dl>

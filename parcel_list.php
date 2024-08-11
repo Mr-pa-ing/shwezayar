@@ -71,7 +71,7 @@
 						</td> -->
 						<td class="text-center">
 		                    <div class="btn-group">
-		                    	<a  class="view view_parcel" data-id="<?php echo $row['id'] ?>">
+		                    	<a  class="view view_parcel" data-id="<?php echo $row['id'] ?>" style="cursor: pointer">
 		                          <i class="fas fa-eye"></i>
 		                        </a>
 		                        <a href="index.php?page=edit_parcel&id=<?php echo $row['id'] ?>" class="edit">
