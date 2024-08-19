@@ -12,7 +12,7 @@
 				<thead>
 					<tr>
 						<th class="text-center">#</th>
-						<th>Reference Number</th>
+						<th>Ref. No</th>
 						<th>Name</th>
 						<th>Description</th>
 						<th>Qty</th>
@@ -96,29 +96,36 @@
 </style>
 <script>
 	$(document).ready(function(){
-		$('#list').dataTable()
-		$('.view_parcel').click(function(){
-			uni_modal("Parcel's Details","view_parcel.php?id="+$(this).attr('data-id'),"large")
-		})
-	$('.delete_parcel').click(function(){
-	_conf("Are you sure to delete this parcel?","delete_parcel",[$(this).attr('data-id')])
-	})
-	})
-	function delete_parcel($id){
-		start_load()
-		$.ajax({
-			url:'ajax.php?action=delete_parcel',
-			method:'POST',
-			data:{id:$id},
-			success:function(resp){
-				if(resp==1){
-					alert_toast("Data successfully deleted",'success')
-					setTimeout(function(){
-						location.reload()
-					},1500)
+    // Initialize DataTable
+    $('#list').dataTable();
 
-				}
-			}
-		})
-	}
+    // Delegate the event for viewing parcel details
+    $('#list').on('click', '.view_parcel', function(){
+        uni_modal("Parcel's Details","view_parcel.php?id="+$(this).attr('data-id'),"large");
+    });
+
+    // Delegate the event for deleting parcel
+    $('#list').on('click', '.delete_parcel', function(){
+        _conf("Are you sure to delete this parcel?","delete_parcel",[$(this).attr('data-id')]);
+    });
+});
+
+// Function to handle the deletion of a parcel
+function delete_parcel($id){
+    start_load();
+    $.ajax({
+        url:'ajax.php?action=delete_parcel',
+        method:'POST',
+        data:{id:$id},
+        success:function(resp){
+            if(resp==1){
+                alert_toast("Data successfully deleted",'success');
+                setTimeout(function(){
+                    location.reload();
+                },1500);
+            }
+        }
+    });
+}
+
 </script>

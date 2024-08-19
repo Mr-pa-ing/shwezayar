@@ -4,7 +4,7 @@ textarea {
     resize: none;
 }
 </style>
-
+<!-- <h3 class="pl-0"><?php echo $title ?></h3> -->
 <div class="card card-outline">
 
     <div class="card-body">
@@ -12,14 +12,14 @@ textarea {
             <input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
             <div id="msg" class=""></div>
             <div class="row">
-                <div class="col-md-3">
-                    <h3 class="pl-0"><?php echo $title ?></h3>
+                <div class="col-md-6">
+                <b>Sender Information</b>
                     <div class="form-group">
                         <label for="" class="control-label">Name</label>
                         <input type="text" name="sender_name" id="" class="form-control"
                             value="<?php echo isset($sender_name) ? $sender_name : '' ?>" required>
                     </div>
-                    <div class="form-group d-none">
+                    <div class="form-group">
                         <label for="" class="control-label">Address</label>
                         <input type="text" name="sender_address" id="" class="form-control "
                             value="<?php echo isset($sender_address) ? $sender_address : '' ?>">
@@ -30,7 +30,7 @@ textarea {
                             value="<?php echo isset($sender_contact) ? $sender_contact : '' ?>">
                     </div>
                 </div>
-                <div class="col-md-6 d-none">
+                <div class="col-md-6">
                     <b>Recipient Information</b>
                     <div class="form-group">
                         <label for="" class="control-label">Name</label>
@@ -89,7 +89,7 @@ textarea {
                         </td>
                         <td>
                             <input type="text" name='width[]' class="form-control"
-                                value="<?php echo isset($width) ? $width :'' ?>">
+                                value="<?php echo isset($width) ? $width :'' ?>" disabled>
                         </td>
                         <td>
                             <input type="text" class="form-control number" name='price[]'
@@ -97,7 +97,7 @@ textarea {
                         </td>
                         <td>
                             <input type="text" class="form-control number" name='amount[]'
-                                value="<?php echo isset($amount) ? $amount :'' ?>">
+                                value="<?php echo isset($amount) ? $amount :'' ?>" disabled>
                         </td>
                         <td>
                             <input type="text" name='bag[]' class="form-control"
@@ -118,12 +118,12 @@ textarea {
                 <?php if(!isset($id)): ?>
                 <tfoot>
                     <th class="text-right">Total</th>
-                    <th class="text-right">0.00</th>
+                    <th class="">0</th>
                     <th></th>
-                    <th class="text-right">0.00</th>
+                    <th class="">0</th>
                     <th></th>
-                    <th class="text-right" id="tAmount">0.00</th>
-                    <th class="text-right">0.00</th>
+                    <th class="" id="tAmount">0</th>
+                    <th class="">0</th>
                 </tfoot>
                 <?php endif; ?>
             </table>
@@ -146,9 +146,9 @@ textarea {
                 <td><input type="text" class="form-control" name='weight[]'></td>
                 <td><input type="text" class="form-control" name='height[]'></td>
                 <td><input type="text" class="form-control" name='length[]'></td>
-                <td><input type="text" class="form-control" name='width[]'></td>
-                <td><input type="text" class="form-control text-right number" name='price[]'></td>
-                <td><input type="text" class="form-control text-right number" name='amount[]'></td>
+                <td><input type="text" class="form-control" name='width[]' disabled></td>
+                <td><input type="text" class="form-control number" name='price[]'></td>
+                <td><input type="text" class="form-control number" name='amount[]' disabled></td>
                 <td><input type="text" class="form-control" name='bag[]'></td>
                 <td><input type="text" class="form-control" name='remark[]'></td>
                 <td><button class="btn btn-sm btn-danger" type="button"
@@ -167,14 +167,14 @@ $('#dtype').change(function() {
         $('#tbi-field').show()
     }
 })
-$('[name="height[]"], [name="length[]"]').keyup(function() {
+$('[name="height[]"], [name="length[]"], [name="price[]"]').keyup(function() {
     calc();
 });
 
 $('#new_parcel').click(function() {
     var tr = $('#ptr_clone tr').clone();
     $('#parcel-items tbody').append(tr);
-    $('[name="height[]"], [name="length[]"]').keyup(function() {
+    $('[name="height[]"], [name="length[]"], [name="price[]"]').keyup(function() {
         calc();
     });
     $('.number').on('input keyup keypress', function() {
@@ -207,7 +207,7 @@ $('#manage-parcel').submit(function(e) {
             if (resp == 1) {
                 alert_toast('Data successfully saved', "success");
                 setTimeout(function() {
-                    location.href = 'index.php?page=parcel_list';
+                    location.href = 'index.php?page=parcel_transaction';
                 }, 2000);
             }
         }
@@ -219,14 +219,15 @@ function calc() {
     var totalQty = 0;
     var totalKg = 0;
     var totalBag = 0;
-    var unitPricePerKg = 1000; // Set your price per Kg here
+    // var unitPricePerKg = 0; // Set your price per Kg here
 
     $('#parcel-items tbody tr').each(function() {
         var qty = parseFloat($(this).find('[name="height[]"]').val().replace(/,/g, '')) || 0;
         var kg = parseFloat($(this).find('[name="length[]"]').val().replace(/,/g, '')) || 0;
+        var unitPricePerKg = parseFloat($(this).find('[name="price[]"]').val().replace(/,/g, '')) || 0;
         var itemTotalKg = qty * kg;
         var amount = itemTotalKg * unitPricePerKg;
-        var bagQty = qty;
+        var bagQty = 0;
 
         // Update calculated fields
         $(this).find('[name="width[]"]').val(itemTotalKg.toLocaleString("en-US")); // Total Kg

@@ -50,7 +50,7 @@ if($_SESSION['login_type'] != 1)
        
       </div>
 
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-md-6">
           <div class="card card-outline ">
         <div class="card-body">
@@ -84,13 +84,13 @@ if($_SESSION['login_type'] != 1)
           </table>
           
         </div>
-      </div>
+      </div> -->
  </div>
-      <div class="col-md-6">
+      <!-- <div class="col-md-6">
         <div class="card card-outline">
          <div id="piechart" style="width: 600px; height: 500px;"></div>
          </div>
-      </div>
+      </div> -->
    
   </div>
 

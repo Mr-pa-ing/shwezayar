@@ -263,6 +263,10 @@ Class Action {
 	}
 	function save_parcel(){
 		extract($_POST);
+	
+		// Generate a single transaction number for the entire transaction
+		$transaction_number = sprintf("%'012d", mt_rand(0, 999999999999));
+	
 		if(isset($price) && is_iterable($price)){
 			foreach($price as $k => $v){
 				$data = "";
@@ -275,41 +279,53 @@ Class Action {
 						}
 					}
 				}
+				
 				if(!isset($type)){
 					$data .= ", type='2' ";
 				}
-					$data .= ", height='{$height[$k]}' ";
-					$data .= ", width='{$width[$k]}' ";
-					$data .= ", length='{$length[$k]}' ";
-					$data .= ", weight='{$weight[$k]}' ";
-					$price[$k] = str_replace(',', '', $price[$k]);
-					$data .= ", price='{$price[$k]}' ";
-					$amount[$k] = str_replace(',', '', $amount[$k]);
-					$data .= ", amount='{$amount[$k]}' ";
-					$data .= ", bag='{$bag[$k]}' ";
-					$data .= ", remark='{$remark[$k]}' ";
-				if(empty($id)){
-					$i = 0;
-					while($i == 0){
-						$ref = sprintf("%'012d",mt_rand(0, 999999999999));
-						$chk = $this->db->query("SELECT * FROM parcels where reference_number = '$ref'")->num_rows;
-						if($chk <= 0){
-							$i = 1;
-						}
+	
+				// Assign values to specific fields
+				$data .= ", height='{$height[$k]}' ";
+				$data .= ", width='{$width[$k]}' ";
+				$data .= ", length='{$length[$k]}' ";
+				$data .= ", weight='{$weight[$k]}' ";
+				$price[$k] = str_replace(',', '', $price[$k]);
+				$data .= ", price='{$price[$k]}' ";
+				$amount[$k] = str_replace(',', '', $amount[$k]);
+				$data .= ", amount='{$amount[$k]}' ";
+				$data .= ", bag='{$bag[$k]}' ";
+				$data .= ", remark='{$remark[$k]}' ";
+				
+				// Generate a unique reference number for each item
+				$i = 0;
+				while($i == 0){
+					$ref = sprintf("%'012d", mt_rand(0, 999999999999));
+					$chk = $this->db->query("SELECT * FROM parcels where reference_number = '$ref'")->num_rows;
+					if($chk <= 0){
+						$i = 1;
 					}
-					$data .= ", reference_number='$ref' ";
+				}
+				$data .= ", reference_number='$ref' ";
+				
+				// Assign the common transaction number
+				$data .= ", transaction_number='$transaction_number' ";
+	
+				// Save or update the parcel
+				if(empty($id)){
 					if($save[] = $this->db->query("INSERT INTO parcels set $data"))
-						$ids[]= $this->db->insert_id;
+						$ids[] = $this->db->insert_id;
 				}else{
 					if($save[] = $this->db->query("UPDATE parcels set $data where id = $id"))
 						$ids[] = $id;
 				}
 			}
 		}
+	
 		if(isset($save) && isset($ids)){
 			return 1;
 		}
 	}
+	
 	function delete_parcel(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM parcels where id = $id");

@@ -32,10 +32,10 @@ header("location:index.php?page=home");
 
                             <div class="text-center  brand-logo">
 
-                                <img class="logo-abbr" src="assets/uploads/logo1.jpg" alt="">
+                                <img class="logo-abbr" src="assets/uploads/logo1.jpg" style="width: 200px; height: 200px" alt="">
                             </div>
 
-                            <h3 class="mb-2">Welcome back!</h3>
+                            <h3 class="mt-5">Welcome back!</h3>
                             <p>Experience the Powerful Management Software</p>
 
                         </div>

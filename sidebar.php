@@ -2,16 +2,18 @@
       <div class="dropdown">
           <a href="./" class="brand-link">
               <?php if($_SESSION['login_type'] == 1): ?>
-              <img src="assets/uploads/logo1.png" width="150px" class="p-2" style="margin-left: 25px;">
+              <img src="assets/uploads/logo1.png" width="100px" height="100px" class=""
+                  style="margin-left: 50px; margin-top: 35px;">
               <?php else: ?>
-              <img src="assets/uploads/logo1.png" width="150px">
+              <img src="assets/uploads/logo1.png" width="100px" height="100px" class=""
+                  style="margin-left: 50px; margin-top: 35px;">
 
               <?php endif; ?>
 
           </a>
       </div>
       <div class="sidebar pb-4 mb-4">
-          <nav class="mt-4">
+          <nav class="mt-5">
               <ul class="nav nav-pills nav-sidebar flex-column nav-flat" data-widget="treeview" role="menu"
                   data-accordion="false">
                   <li class="nav-item dropdown">
@@ -79,6 +81,16 @@
                           </p>
                       </a>
                   </li>
+
+                  <li class="nav-item dropdown">
+                      <a href="./index.php?page=parcel_transaction" class="nav-link nav-parcel_transaction">
+                          <i class="nav-icon fas fa-box"></i>
+                          <p>
+                              Parcel Transaction
+                          </p>
+                      </a>
+                  </li>
+
 
                   <li class="nav-item dropdown">
                       <a href="./index.php?page=parcel_list" class="nav-link nav-parcel_list">

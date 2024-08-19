@@ -66,73 +66,76 @@
 </div>
 <noscript>
     <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .details p {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    table.table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    table.table th,
+    table.table td {
+        border: 1px solid #000;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    table.table th {
+        background-color: #f0f0f0;
+        text-align: left;
+    }
+
+    table.table td {
+        text-align: left;
+    }
+
+    tfoot th {
+        border-top: 2px solid #000;
+        font-weight: bold;
+    }
+
+    /* Adjustments for smaller screens or pages */
+    @media print {
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-size: 12px;
+            margin: 10px;
         }
 
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
+        table.table th,
+        table.table td {
+            font-size: 12px;
         }
 
         h3 {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 20px;
         }
 
         .details p {
-            font-size: 14px;
-            margin-bottom: 5px;
+            font-size: 12px;
         }
-
-        table.table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table.table th, 
-        table.table td {
-            border: 1px solid #000;
-            padding: 8px;
-            font-size: 14px;
-        }
-
-        table.table th {
-            background-color: #f0f0f0;
-            text-align: left;
-        }
-
-        table.table td {
-            text-align: left;
-        }
-
-        tfoot th {
-            border-top: 2px solid #000;
-            font-weight: bold;
-        }
-
-        /* Adjustments for smaller screens or pages */
-        @media print {
-            body {
-                font-size: 12px;
-                margin: 10px;
-            }
-            table.table th, 
-            table.table td {
-                font-size: 12px;
-            }
-            h3 {
-                font-size: 20px;
-            }
-            .details p {
-                font-size: 12px;
-            }
-        }
+    }
     </style>
     <h3 class="text-center"><b>Report</b></h3>
 </noscript>
@@ -176,7 +179,7 @@ function load_report() {
                 var totalQty = 0,
                     totalKg = 0,
                     totalAmount = 0,
-					totalBag = 0;
+                    totalBag = 0;
 
                 Object.keys(resp).forEach(function(k) {
                     if (resp[k]) { // Check if resp[k] is defined
@@ -197,7 +200,7 @@ function load_report() {
                         totalQty += parseFloat(resp[k].length) || 0;
                         totalKg += parseFloat(resp[k].width) || 0;
                         totalAmount += parseFloat((resp[k].amount).replace(/,/g, '')) || 0;
-						totalBag += parseFloat(resp[k].bag) || 0;
+                        totalBag += parseFloat(resp[k].bag) || 0;
 
                         $('#report-list tbody').append(tr)
                     }
@@ -216,7 +219,7 @@ function load_report() {
                     '</b></td>')
                 tr.append('<td><b>' + totalBag.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
                     '</b></td>')
-				tr.append('<td></td>')
+                tr.append('<td></td>')
 
                 $('#report-list tbody').append(tr)
 
@@ -342,6 +345,4 @@ function printCommodity() {
         end_load();
     }, 750);
 }
-
-
 </script>
