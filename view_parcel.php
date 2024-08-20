@@ -138,6 +138,7 @@ $branch = array();
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 </div>
 <style>
+
 #uni_modal .modal-footer {
     display: none
 }
@@ -148,19 +149,21 @@ $branch = array();
 </style>
 <noscript>
     <style>
-    table.table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table.table tr,
-    table.table th,
-    table.table td {
-        border: 1px solid;
-    }
-
-    .text-cnter {
-        text-align: center;
+    
+    @media print {
+        * {
+            box-sizing: border-box;
+        }
+        @page {
+            width: 660px;
+            height: 240px;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+        }
     }
     </style>
 </noscript>
@@ -177,18 +180,18 @@ function printLabels() {
     start_load();
 
     var ns = $('noscript').clone();
-    var barcodeContainer = $('<div style="display: flex; flex-wrap: wrap;"></div>');
-    var bagCount = <?php echo $bag; ?>;
-    var companyName = "Shwe Zayar"; // Replace with your actual company name
+    var barcodeContainer = $('<div style="display: flex; flex-wrap: wrap; margin: 0; padding: 0"></div>');
+    var bagCount = <?php echo $bag > 2 ? 2 : 1 ; ?>;
+    var companyName = "Zayar Monywa";
     var referenceNumber = "<?php echo $reference_number; ?>";
     var weightKg = "<?php echo $height; ?>";
 
     for (var i = 0; i < bagCount; i++) {
         var barcodeHTML = `
-            <div style="text-align: center; margin-bottom: 10px; margin-right: 10px; padding: 10px; border: 1px solid #000; width: 200px;">
-                <div style="font-weight: bold; margin-bottom: 5px;">${companyName}</div>
-                <?php echo $generator->getBarcode($reference_number, $generator::TYPE_CODE_128); ?>
-                <div style="margin-top: 5px;display: flex; align-items: center; justify-content: space-between;">
+            <div style="width: 100px;margin-top: 10px; margin-left: 12px;">
+                <div style="font-size: 15px;font-weight: bold; margin-bottom: 5px;">${companyName}</div>
+                <?php echo $generator->getBarcode($reference_number, $generator::TYPE_CODE_128, 1, 50); ?>
+                <div style="margin-top: 5px;font-size: 10px; display: flex; align-items: center; justify-content: space-between;">
                     <div><strong>${referenceNumber}</strong></div>
                     <div><strong>${weightKg} Kg</strong></div>
                 </div>
@@ -196,9 +199,7 @@ function printLabels() {
         `;
         barcodeContainer.append(barcodeHTML);
     }
-
     ns.append(barcodeContainer);
-
     var nw = window.open('', '', 'height=700,width=900');
     nw.document.write(ns.html());
     nw.document.close();
